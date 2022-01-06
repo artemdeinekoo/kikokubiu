@@ -8,10 +8,11 @@ def welcomeMessage():
         return helloMessage
 
 def startKeyboard():
-    firstKeyboard = types.InlineKeyboardMarkup()
+    firstKeyboard = types.InlineKeyboardMarkup(row_width=1)
     keyOpenCatalog = types.InlineKeyboardButton(text='Перейти до каталогу 📃', callback_data='catalog')
     keyViewCart = types.InlineKeyboardButton(text='Переглянути корзину 🛒', callback_data='cart')
-    firstKeyboard.add(keyOpenCatalog, keyViewCart) 
+    firstKeyboard.add(keyOpenCatalog)
+    firstKeyboard.add(keyViewCart) 
     
     return firstKeyboard
 
@@ -44,5 +45,25 @@ def catalogKeyboard():
 
     keyBackToTheFirstMenu = types.InlineKeyboardButton(text = "🔙", callback_data='backToTheFirstMenu')
     keyboard.add(keyBackToTheFirstMenu)
+
+    return keyboard
+
+def cartKeyboard():
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+
+    keyBackToTheFirstMenu = types.InlineKeyboardButton(text = "🔙", callback_data='backToTheFirstMenu')
+
+    keyCleanCart = types.InlineKeyboardButton(text = "Очистити корзину🧹", callback_data='clearCart')
+
+    keyAcceptOrder = types.InlineKeyboardButton(text = "Оформити замовлення✅", callback_data='accept')
+
+    keyboard.add(keyBackToTheFirstMenu, keyCleanCart, keyAcceptOrder)
+
+    return keyboard
+
+def nlyBackKey():
+    keyboard = types.InlineKeyboardMarkup()
+    keyOpenCatalog = types.InlineKeyboardButton(text='Перейти до каталогу 📃', callback_data='catalog')
+    keyboard.add(keyOpenCatalog)
 
     return keyboard

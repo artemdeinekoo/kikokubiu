@@ -39,7 +39,7 @@ def handle_command(message):
 @bot.callback_query_handler(lambda call: True)
 
 def handle(call):
-    if call.data == "catalog":
+    if call.data == 'catalog':
         bot.edit_message_text (chat_id=call.message.chat.id, 
         message_id=call.message.message_id, text = catalogMessage(), 
         reply_markup = catalogKeyboard())
@@ -76,15 +76,38 @@ def handle(call):
         bot.send_photo(call.message.chat.id, photo = item.showItemPhoto(item.addItemArr(category)))
         bot.send_message(call.message.chat.id, text = item.showItem(item.addItemArr(category)), reply_markup =  item.itemKeyboard())
 
-    elif call.data == "backToCatalog":
+    elif call.data == 'backToCatalog':
         bot.send_message(call.message.chat.id, text = catalogMessage(), reply_markup=  catalogKeyboard())
         item.itemId = 0
 
-    elif call.data == "backToTheFirstMenu":
+    elif call.data == 'backToTheFirstMenu':
         bot.send_message(call.message.chat.id, text = welcomeMessage(), reply_markup = startKeyboard())
         item.itemId = 0
 
+    elif call.data == 'cart':
+        for i in range(len(client.cart)):
+            bot.send_message(call.message.chat.id, text = client.cart[i])
+        bot.send_message(call.message.chat.id, text = client.showSubtotal(), reply_markup = cartKeyboard())
+
+    elif call.data == 'addToCart':
+        client.cart.append(item.name)
+        client.sum += int(item.price)
+        bot.send_message(call.message.chat.id, text = 'Вітаємо, товар успішно додано в корзину!', reply_markup = startKeyboard())
+
+    elif call.data == 'clearCart':
+        client.clearCart()
+        bot.send_message(call.message.chat.id, text = 'Корзину очищено!', reply_markup = startKeyboard())
+
+    elif call.data == 'accept':
+        sent = bot.send_message(call.message.chat.id, text = "Зараз вам потрібно буде вводити контактні дані, щоби наш менеджер із вами зв'язався. Якщо із вами не зв'язалися протягом 24 годин, оформіть замовлення ще раз. \n Введіть свій номер телефону:", reply_markup = nlyBackKey())
+        bot.register_next_step_handler(sent, addOrderToDb)
         
+
+def addOrderToDb(message):
+    bot.send_message(message.chat.id, 'Дякуємо за замовлення!❤️')
+    client.acceptOrder(client_id = message.from_user.id, client_name = message.text)
+
 
 
 bot.polling()
+
